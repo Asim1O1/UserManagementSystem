@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
-import userModel from "../../models/users/userModel";
+import userModel from "../../models/users/userModel.js"
 import createError from "http-errors"; //
-import { getFilePath, uploadToCloudinary } from "../../utils/fileHelpers";
+import { getFilePath, uploadToCloudinary } from "../../utils/fileUpload.js";
 
 const usernameRegex = /^[a-zA-Z0-9._-]{3,20}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

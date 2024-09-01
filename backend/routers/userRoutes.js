@@ -1,8 +1,10 @@
 import express from "express";
-import { registerUser } from "../controllers/users/userController";
-import upload from "../middlewares/multerConfig";
 
-const router = express.Router();
-router.post("/register", upload.single("image"), registerUser);
+import {registerUser} from "../controllers/users/userController.js"
+import upload from "../middlewares/multerConfig.js"
 
-export default router;
+const userRouter = express.Router();
+
+userRouter.post("/register", upload.single("image"), registerUser);
+
+export default userRouter;

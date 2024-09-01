@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
-import cloudinary from "../configuration/cloudinary";
+import cloudinary from "../configuration/cloudinary.js";
 
 export const uploadToCloudinary = async (
   filePath,

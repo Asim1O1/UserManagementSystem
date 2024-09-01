@@ -1,5 +1,5 @@
 import cloudinary from "cloudinary";
-import Config from "./config";
+import Config from "./config.js";
 
 cloudinary.v2.config({
   cloud_name: Config?.cloud_name,

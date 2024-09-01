@@ -1,7 +1,7 @@
 import express from "express";
 import connectDB from "./configuration/db.js";
 import Config from "./configuration/config.js";
-import userRoutes from "./routers/userRoutes.js"
+import userRouter from "./routers/userRoutes.js";
 
 const server = express();
 
@@ -14,7 +14,7 @@ server.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-server.use('api/users', userRoutes);
+server.use("/api/users",userRouter);
 
 // Start Server Function
 const startServer = async () => {
