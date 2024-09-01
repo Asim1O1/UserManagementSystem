@@ -26,9 +26,8 @@ const startServer = async () => {
     });
   } catch (error) {
     console.error("Failed to start the server:", error);
-    process.exit(1); // Exit the process with failure
+    process.exit(1);
   }
 };
 
-// Call the startServer function to start the application
 startServer();
