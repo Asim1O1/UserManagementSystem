@@ -2,14 +2,12 @@ import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Correct path resolution for ES6 modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const uploadDir = path.resolve(__dirname, "../../public/uploads");
 
 console.log(uploadDir);
 
-// Ensure the directory exists (optional)
 import fs from "fs";
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -28,7 +26,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 10_000_000 }, // 10 MB
+  limits: { fileSize: 10_000_000 },
 });
 
 export default upload;

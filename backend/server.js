@@ -13,8 +13,7 @@ server.use(express.urlencoded({ extended: true }));
 server.get("/", (req, res) => {
   res.send("API is running...");
 });
-
-server.use("/api/users",userRouter);
+server.use("/api/users", userRouter);
 
 // Start Server Function
 const startServer = async () => {
