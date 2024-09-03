@@ -143,7 +143,7 @@ export const userLogin = async (req, res, next) => {
     const refreshToken = generateRefreshToken(user?._id);
 
     // Update last login time
-    user?.lastLogin = new Date();
+    user.lastLogin = new Date();
     await user.save();
 
     // Send success response
