@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import uiImage from "../assets/images/Rectangle 20 (3).png";
 import Button from "../components/button";
+import { registerUser } from "../redux/slices/user/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    userName: "",
+    image: "",
+    email: "",
+    password: "",
+  });
+
+  const { firstName, lastName, userName, image, email, password } = formData;
+
+  const onChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   return (
     <>
       <div className="h-screen flex items-center justify-center w-full bg-gray-100">

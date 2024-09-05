@@ -11,7 +11,7 @@ server.use(express.urlencoded({ extended: true }));
 
 // routes
 server.get("/", (req, res) => {
-  res.send("API is running...");
+  res.send(" User Management System's API is running...");
 });
 server.use("/api/users", userRouter);
 
