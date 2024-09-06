@@ -2,10 +2,22 @@ import express from "express";
 import connectDB from "./configuration/db.js";
 import Config from "./configuration/config.js";
 import userRouter from "./routers/userRoutes.js";
+import cors from "cors";
 
 const server = express();
 
+server.use(cors());
+
+server.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+  })
+);
+
 // Middleware to parse JSON and URL-encoded data
+
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
