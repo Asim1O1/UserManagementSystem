@@ -25,6 +25,7 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const handleImageChange = (e) => {
+    console.log("The event files iss", e.target.files[0]);
     setImage(e.target.files[0]);
   };
 
@@ -56,10 +57,24 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!validateForm(formData)) return;
+
+    const formDataToSend = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+      formDataToSend.append(key, formData[key]);
+    });
+
+    // Conditionally append image if it exists
+    if (image) {
+      formDataToSend.append("image", image);
+    }
+
     try {
-      const resultAction = await dispatch(registerUser(formData));
+      const resultAction = await dispatch(registerUser(formDataToSend));
       console.log("The result action is", resultAction);
+
       if (registerUser.fulfilled.match(resultAction)) {
         Swal.fire({
           title: "Success",
@@ -70,13 +85,17 @@ const Register = () => {
         Swal.fire({
           title: "Error",
           icon: "error",
-          text: resultAction?.payload?.ErrorMessage[0].message,
+          text:
+            resultAction.payload.ErrorMessage[0]?.message ||
+            "An error occurred",
         });
       }
     } catch (error) {
+      console.log("The erorr is", error)
       Swal.fire({
-        title: "error",
-        text: error.message,
+        title: "Error",
+        icon: "error",
+        text: "An unexpected server error occurred",
       });
     }
   };
