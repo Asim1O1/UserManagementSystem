@@ -1,21 +1,22 @@
 import path from "path";
 import fs from "fs/promises";
 import cloudinary from "../configuration/cloudinary.js";
+import { fileURLToPath } from "url";
 
-export const uploadToCloudinary = async (
-  filePath,
-  folder,
-  filename,
-  format
-) => {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const uploadToCloudinary = async (filePath,folder,filename,format) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       folder,
       public_id: filename,
       resource_type: format === "pdf" ? "raw" : "image",
     });
+    console.log("THE RESULT IS", result)
     await fs.unlink(filePath);
-    return result?.secret_key;
+    console.log("THE RESULT IS", result)
+    return result.secure_url;
   } catch (error) {
     await fs.unlink(filePath);
     throw error;
@@ -23,5 +24,5 @@ export const uploadToCloudinary = async (
 };
 
 export const getFilePath = (filename) => {
-  return path.resolve(__dirname, "../../public/data/uploads", filename);
+  return path.resolve(__dirname, "../../public/uploads", filename);
 };

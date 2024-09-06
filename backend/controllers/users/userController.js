@@ -13,6 +13,7 @@ const passwordRegex =
 // Register User
 export const registerUser = async (req, res, next) => {
   const { firstName, lastName, userName, email, password } = req?.body;
+  console.log("Thee image url is", req.body.image)
 
   // Validation for missing fields
   if (!firstName || !lastName || !userName || !email || !password) {
