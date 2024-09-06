@@ -4,24 +4,81 @@ import Button from "../components/button";
 import { registerUser } from "../redux/slices/user/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [image, setImage] = useState("");
 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     userName: "",
-    image: "",
     email: "",
     password: "",
   });
 
-  const { firstName, lastName, userName, image, email, password } = formData;
+  const { firstName, lastName, userName, email, password } = formData;
 
-  const onChange = (e) => {
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const validateForm = (formData) => {
+    if (!formData) {
+      Swal.fire({
+        title: "Warning",
+        text: "Please fill all the fields!",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return false;
+    }
+
+    const { firstName, lastName, userName, email, password } = formData;
+
+    if (!firstName || !lastName || !userName || !email || !password) {
+      Swal.fire({
+        title: "Warning",
+        text: "Please fill all the fields!",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm(formData)) return;
+    try {
+      const resultAction = await dispatch(registerUser(formData));
+      console.log("The result action is", resultAction);
+      if (registerUser.fulfilled.match(resultAction)) {
+        Swal.fire({
+          title: "Success",
+          icon: "success",
+          text: resultAction.payload.Result.message,
+        });
+      } else {
+        Swal.fire({
+          title: "Error",
+          icon: "error",
+          text: resultAction?.payload?.ErrorMessage[0].message,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "error",
+        text: error.message,
+      });
+    }
   };
 
   return (
@@ -48,6 +105,9 @@ const Register = () => {
                   <input
                     type="text"
                     id="firstName"
+                    name="firstName"
+                    value={firstName}
+                    onChange={handleChange}
                     className="peer h-11 w-full border border-gray-300 text-black placeholder-transparent focus:outline-none focus:border-indigo-600 p-4 rounded-sm"
                     placeholder="First Name"
                   />
@@ -64,6 +124,9 @@ const Register = () => {
                   <input
                     type="text"
                     id="lastName"
+                    name="lastName"
+                    value={lastName}
+                    onChange={handleChange}
                     className="peer h-11 w-full border border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-indigo-600 p-4 rounded-sm"
                     placeholder="Last Name"
                   />
@@ -83,6 +146,9 @@ const Register = () => {
                   <input
                     type="text"
                     id="username"
+                    name="userName"
+                    value={userName}
+                    onChange={handleChange}
                     className="peer h-11 w-full border border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-indigo-600 p-4 rounded-sm"
                     placeholder="Username"
                   />
@@ -98,11 +164,13 @@ const Register = () => {
                 <div className="relative">
                   <input
                     type="file"
-                    id="profileImage"
+                    id="image"
+                    name="image"
+                    onChange={handleImageChange}
                     className="h-12 w-full border text-xs border-gray-300 text-gray-900 focus:outline-none focus:border-indigo-600 p-4 rounded-sm"
                   />
                   <label
-                    htmlFor="profileImage"
+                    htmlFor="image"
                     className="absolute left-4 -top-3.5 bg-white px-1 text-sm text-black"
                   >
                     Image
@@ -115,6 +183,9 @@ const Register = () => {
                 <input
                   type="email"
                   id="email"
+                  name="email"
+                  value={email}
+                  onChange={handleChange}
                   className="peer h-11 w-full border border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-indigo-600 p-4 rounded-sm"
                   placeholder="Email"
                 />
@@ -131,6 +202,9 @@ const Register = () => {
                 <input
                   type="password"
                   id="password"
+                  name="password"
+                  value={password}
+                  onChange={handleChange}
                   className="peer h-11 w-full border border-gray-300 text-black placeholder-transparent focus:outline-none focus:border-indigo-600 p-4 rounded-sm"
                   placeholder="Password"
                 />
@@ -156,7 +230,9 @@ const Register = () => {
                 </label>
               </div>
 
-              <Button type="submit">Create account</Button>
+              <Button type="submit" onClick={handleSubmit}>
+                Create account
+              </Button>
               <p className="text-center text-sm">
                 Already have an account? Login
               </p>
