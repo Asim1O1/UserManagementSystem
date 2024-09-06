@@ -3,6 +3,7 @@ import connectDB from "./configuration/db.js";
 import Config from "./configuration/config.js";
 import userRouter from "./routers/userRoutes.js";
 import cors from "cors";
+import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js";
 
 const server = express();
 
@@ -26,6 +27,12 @@ server.get("/", (req, res) => {
   res.send(" User Management System's API is running...");
 });
 server.use("/api/users", userRouter);
+
+// Handle 404 errors
+server.use(notFoundHandler);
+
+// Use custom error handler
+server.use(errorHandler);
 
 // Start Server Function
 const startServer = async () => {
