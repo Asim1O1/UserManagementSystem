@@ -65,6 +65,7 @@ export const registerUser = async (req, res, next) => {
     let imageUrl = "";
     if (req.file) {
       const imagePath = getFilePath(req?.file?.filename);
+      console.log("hello")
       const imageMimeType = req.file.mimetype.split("/").pop();
       imageUrl = await uploadToCloudinary(
         imagePath,
