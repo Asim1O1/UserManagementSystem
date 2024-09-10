@@ -72,7 +72,7 @@ const Register = () => {
     }
 
     try {
-      const resultAction = await dispatch(registerUser(formDataToSend));
+      const resultAction = await dispatch(registerUser(formDataToSend)).unwrap();
       console.log("The result action is", resultAction);
 
       if (registerUser.fulfilled.match(resultAction)) {
@@ -81,6 +81,8 @@ const Register = () => {
           icon: "success",
           text: resultAction.payload.Result.message,
         });
+
+        navigate("/login")
       } else {
         Swal.fire({
           title: "Error",
@@ -199,22 +201,22 @@ const Register = () => {
 
               {/* Email */}
               <div className="relative">
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={email}
-                  onChange={handleChange}
-                  className="peer h-11 w-full border border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-indigo-600 p-4 rounded-sm"
-                  placeholder="Email"
-                />
-                <label
-                  htmlFor="email"
-                  className="absolute left-4 -top-3.5 bg-white px-1 text-sm text-black transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-black peer-placeholder-shown:bg-transparent peer-focus:-top-2 peer-focus:text-gray-600 peer-focus:bg-white"
-                >
-                  Email
-                </label>
-              </div>
+                  <input
+                    type="text"
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={handleChange}
+                    className="peer h-11 w-full border border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-indigo-600 p-4 rounded-sm"
+                    placeholder="email"
+                  />
+                  <label
+                    htmlFor="email"
+                    className="absolute left-4 -top-3.5 bg-white px-1 text-sm text-black transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-black peer-placeholder-shown:bg-transparent peer-focus:-top-2 peer-focus:text-gray-600 peer-focus:bg-white"
+                  >
+                    Email
+                  </label>
+                </div>
 
               {/* Password */}
               <div className="relative">
