@@ -4,6 +4,10 @@ import userModel from "../../models/users/userModel.js";
 import createError from "http-errors";
 import { getFilePath, uploadToCloudinary } from "../../utils/fileUpload.js";
 import Config from "../../configuration/config.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../utils/tokenGenerations.js";
 
 const usernameRegex = /^[a-zA-Z0-9._-]{3,20}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,7 +17,7 @@ const passwordRegex =
 // Register User
 export const registerUser = async (req, res, next) => {
   const { firstName, lastName, userName, email, password } = req?.body;
-  console.log("Thee image url is", req.body.image)
+  console.log("Thee image url is", req.body.image);
 
   // Validation for missing fields
   if (!firstName || !lastName || !userName || !email || !password) {
@@ -65,7 +69,7 @@ export const registerUser = async (req, res, next) => {
     let imageUrl = "";
     if (req.file) {
       const imagePath = getFilePath(req?.file?.filename);
-      console.log("hello")
+      console.log("hello");
       const imageMimeType = req.file.mimetype.split("/").pop();
       imageUrl = await uploadToCloudinary(
         imagePath,
@@ -105,19 +109,11 @@ export const registerUser = async (req, res, next) => {
   }
 };
 
-// Generate Access Token
-const generateAccessToken = (userId) => {
-  return jwt.sign({ userId }, Config.jwtSecret, { expiresIn: "1h" });
-};
-
-// Generate Refresh Token
-const generateRefreshToken = (userId) => {
-  return jwt.sign({ userId }, Config.refreshTokenSecret, { expiresIn: "7d" });
-};
-
 // User Login
 export const userLogin = async (req, res, next) => {
   const { email, password } = req.body;
+  console.log("The request body is", req.body);
+  console.log("The email and password is", email, password);
 
   // Check if email and password are provided
   if (!email || !password) {
@@ -127,8 +123,9 @@ export const userLogin = async (req, res, next) => {
   try {
     // Find user by email
     const user = await userModel.findOne({ email });
+
     if (!user) {
-      return next(createError(404, "User not found.")); // 404 Not Found
+      return next(createError(404, "User Not Found")); // 404 Not Found
     }
 
     // Check if password matches

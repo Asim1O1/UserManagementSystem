@@ -6,6 +6,6 @@ import upload from "../middlewares/multerConfig.js"
 const userRouter = express.Router();
 
 userRouter.post("/register", upload.single("image"), registerUser);
-userRouter.get("/login", userLogin)
+userRouter.post("/login", userLogin)
 
 export default userRouter;
