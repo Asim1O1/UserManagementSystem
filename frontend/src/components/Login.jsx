@@ -76,11 +76,10 @@ const Login = () => {
         });
       }
     } catch (error) {
-      console.log("The error while logging in is", error);
       Swal.fire({
         title: "Error",
         icon: "error",
-        text: "An error occurred",
+        text: "Server Error. Please try again later",
       });
       return error;
     }

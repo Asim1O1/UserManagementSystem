@@ -23,6 +23,12 @@ function NavBar() {
               Login
             </a>
           </li>
+          <li>
+            {" "}
+            <a href="/userProfile/:id" className="hover:text-blue-500">
+              Profile
+            </a>
+          </li>
         </ul>
       </nav>
     </>

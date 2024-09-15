@@ -186,3 +186,43 @@ export const getUserProfile = async (req, res, next) => {
     next(createError(500, "Internal Server Error. Please try again later."));
   }
 };
+
+export const updateUserProfile = async (req, res, next) => {
+  try {
+    const user_id = req.user.userId;
+    let user = await userModel.findById(user_id);
+
+    if (!user) {
+      return next(createError(404, "User not found!"));
+    }
+
+    const { firstName, lastName, userName, email, image } = req.body;
+
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (userName) user.userName = userName;
+    if (email) user.email = email;
+    if (image) user.image = image;
+
+    await user.save();
+
+    return res.status(200).json({
+      IsSuccess: true,
+      ErrorMessage: [],
+      Result: {
+        message: "User profile updated",
+        user: {
+          id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          userName: user.userName,
+          image: user.image,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("The error while updating user profile", error);
+    return next(createError(500, "Internal server error.Try again later!"));
+  }
+};
