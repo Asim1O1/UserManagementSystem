@@ -167,7 +167,7 @@ export const userLogin = async (req, res, next) => {
 
 export const getUserProfile = async (req, res, next) => {
   try {
-    const user = await userModel.findById(req.user._id).select("-password");
+    const user = await userModel.findById(req.user.userId).select("-password");
 
     if (!user) {
       return next(createError(404, "User not Found!"));
