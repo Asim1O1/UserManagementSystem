@@ -1,9 +1,7 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import userModel from "../../models/users/userModel.js";
 import createError from "http-errors";
 import { getFilePath, uploadToCloudinary } from "../../utils/fileUpload.js";
-import Config from "../../configuration/config.js";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -134,9 +132,6 @@ export const userLogin = async (req, res, next) => {
       return next(createError(401, "Incorrect password.")); // 401 Unauthorized
     }
 
-    // Check if user is logging in for the first time
-    const isNewUser = !user.lastLogin;
-
     // Generate JWT tokens
     const accessToken = generateAccessToken(user?._id);
     const refreshToken = generateRefreshToken(user?._id);
@@ -161,12 +156,33 @@ export const userLogin = async (req, res, next) => {
           userName: user?.userName,
           email: user?.email,
           image: user?.image,
-          isNewUser,
         },
       },
     });
   } catch (error) {
     console.error(error);
+    next(createError(500, "Internal Server Error. Please try again later."));
+  }
+};
+
+export const getUserProfile = async (req, res, next) => {
+  try {
+    const user = await userModel.findById(req.user._id).select("-password");
+
+    if (!user) {
+      return next(createError(404, "User not Found!"));
+    }
+    const userObject = user.toObject();
+    return res.status(200).json({
+      IsSuccess: true,
+      ErrorMessage: [],
+      Result: {
+        message: "User data fetched successfully",
+        user_data: userObject,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
     next(createError(500, "Internal Server Error. Please try again later."));
   }
 };

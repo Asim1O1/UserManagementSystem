@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import Config from "../configuration/config.js";
 
 // Generate Access Token
