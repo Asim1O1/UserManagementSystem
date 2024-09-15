@@ -25,7 +25,7 @@ function NavBar() {
           </li>
           <li>
             {" "}
-            <a href="/userProfile/:id" className="hover:text-blue-500">
+            <a href="/userProfile" className="hover:text-blue-500">
               Profile
             </a>
           </li>
