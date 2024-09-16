@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Button from "./button";
+import Button from "./button.jsx";
 import uiImage from "../assets/images/Rectangle 20 (3).png";
 import { loginUser } from "../redux/slices/user/authSlice";
 import { useDispatch } from "react-redux";
