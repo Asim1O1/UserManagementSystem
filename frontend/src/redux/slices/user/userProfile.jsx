@@ -6,7 +6,7 @@ export const getUserProfile = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await UserProfileApi.getUserProfile();
-
+      console.log("The response is ", response);
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

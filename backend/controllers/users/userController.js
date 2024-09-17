@@ -6,6 +6,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../../utils/tokenGenerations.js";
+import cloudinary from "../../configuration/cloudinary.js";
 
 const usernameRegex = /^[a-zA-Z0-9._-]{3,20}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -89,6 +90,7 @@ export const registerUser = async (req, res, next) => {
 
     // Prepare the response without the password
     const userObject = newUser.toObject();
+    console.log("The user ovject while createig user ", userObject)
     delete userObject.password;
 
     // Send success response
@@ -168,11 +170,13 @@ export const userLogin = async (req, res, next) => {
 export const getUserProfile = async (req, res, next) => {
   try {
     const user = await userModel.findById(req.user.userId).select("-password");
+    console.log("THE USER IS ", user)
 
     if (!user) {
       return next(createError(404, "User not Found!"));
     }
     const userObject = user.toObject();
+    console.log("The user object ", userObject)
     return res.status(200).json({
       IsSuccess: true,
       ErrorMessage: [],
@@ -189,6 +193,7 @@ export const getUserProfile = async (req, res, next) => {
 
 export const updateUserProfile = async (req, res, next) => {
   try {
+    console.log("Entered the update user profile");
     const user_id = req.user.userId;
     let user = await userModel.findById(user_id);
 
@@ -196,13 +201,33 @@ export const updateUserProfile = async (req, res, next) => {
       return next(createError(404, "User not found!"));
     }
 
-    const { firstName, lastName, userName, email, image } = req.body;
+    const { firstName, lastName, userName, email } = req.body;
+    let imageUrl = user.image;
+    console.log("The image url is", imageUrl);
 
+    if (req.file) {
+      if (imageUrl) {
+        const publicId = imageUrl.split("/").pop().split(".")[0];
+        await cloudinary.v2.uploader.destroy(`profile-images/${publicId}`);
+      }
+
+      // Upload new image
+      const imagePath = getFilePath(req.file.filename);
+      const imageMimeType = req.file.mimetype.split("/").pop();
+      imageUrl = await uploadToCloudinary(
+        imagePath,
+        "profile-images",
+        req.file.filename,
+        imageMimeType
+      );
+    }
+
+    // Update user information
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
     if (userName) user.userName = userName;
     if (email) user.email = email;
-    if (image) user.image = image;
+    if (imageUrl) user.image = imageUrl;
 
     await user.save();
 
@@ -222,7 +247,7 @@ export const updateUserProfile = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.error("The error while updating user profile", error);
-    return next(createError(500, "Internal server error.Try again later!"));
+    console.error("Error while updating user profile:", error);
+    return next(createError(500, "Internal server error. Try again later!"));
   }
 };

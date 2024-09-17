@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import Button from "../components/button";
 import {
   getUserProfile,
   updateUserProfile,
 } from "../redux/slices/user/userProfile";
+import { ClipLoader } from "react-spinners";
+import { FaCamera } from "react-icons/fa";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
   const { user, status, error } = useSelector((state) => state.UserProfile);
-  console.log("The user  is", user);
 
   const [isEditable, setIsEditable] = useState(false);
   const [formData, setFormData] = useState({
@@ -19,6 +19,10 @@ const UserProfile = () => {
     userName: "",
     email: "",
   });
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(
+    user?.image || "https://via.placeholder.com/150"
+  );
 
   useEffect(() => {
     dispatch(getUserProfile());
@@ -32,6 +36,7 @@ const UserProfile = () => {
         userName: user.userName || "",
         email: user.email || "",
       });
+      setImagePreview(user.image || "https://via.placeholder.com/150");
     }
   }, [user]);
 
@@ -44,9 +49,25 @@ const UserProfile = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => { 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateUserProfile(formData));
+    const formDataWithImage = new FormData();
+    formDataWithImage.append("firstName", formData.firstName);
+    formDataWithImage.append("lastName", formData.lastName);
+    formDataWithImage.append("userName", formData.userName);
+    formDataWithImage.append("email", formData.email);
+    if (selectedImage) {
+      formDataWithImage.append("image", selectedImage);
+    }
+    dispatch(updateUserProfile(formDataWithImage));
     setIsEditable(!isEditable);
   };
 
@@ -54,26 +75,42 @@ const UserProfile = () => {
     <div className="min-h-screen bg-[#BAD0F8] flex flex-col items-center justify-center">
       <div
         className="relative bg-[#F9F9F9] w-[800px] h-[500px] mx-[20px] my-[5%] p-4 rounded-3xl"
-        style={{
-          border: "7px solid #E3E3E3",
-          borderRadius: "1.5rem",
-        }}
+        style={{ border: "7px solid #E3E3E3", borderRadius: "1.5rem" }}
       >
-        {status === "loading" && <p>Loading...</p>}
-
-        {!user && <p>No user profile found.</p>}
+        {status === "loading" && (
+          <div className="flex justify-center items-center h-full">
+            <ClipLoader color="#4182F9" size={50} />
+          </div>
+        )}
+        {status === "failed" && <p>Error: {error}</p>}
+        {!user && !status && <p>No user profile found.</p>}
         {user && (
           <>
             <h1>Welcome {user.firstName || "User"}</h1>
             <p>{new Date().toDateString()}</p>
             <div className="bg-[#BAD0F8] h-[50px] my-3 rounded-md border border-[#F9F9F9]"></div>
             <div className="px-1 flex flex-row items-center border border-[#FFFFFF]">
-              <div className="w-24 h-24 rounded-full overflow-hidden">
+              <div className="relative w-24 h-24 rounded-full overflow-hidden">
                 <img
-                  src={user.image || "https://via.placeholder.com/150"}
+                  src={imagePreview}
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
+                {isEditable && (
+                  <label
+                    htmlFor="imageUpload"
+                    className="absolute bottom-0 right-0 mb-2 mr-2 bg-blue-500 p-2 rounded-full text-white cursor-pointer"
+                  >
+                    <FaCamera />
+                    <input
+                      type="file"
+                      id="imageUpload"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
+                )}
               </div>
               <div className="ml-4 flex flex-col border border-[#F9F9F9]">
                 <h1 className="text-lg font-semibold">
@@ -106,7 +143,6 @@ const UserProfile = () => {
                     disabled={!isEditable}
                   />
                 </div>
-
                 <div>
                   <label className="block mb-2 text-sm font-medium text-gray-700">
                     Last Name
@@ -121,7 +157,6 @@ const UserProfile = () => {
                     disabled={!isEditable}
                   />
                 </div>
-
                 <div>
                   <label className="block mb-2 text-sm font-medium text-gray-700">
                     Username
@@ -136,7 +171,6 @@ const UserProfile = () => {
                     disabled={!isEditable}
                   />
                 </div>
-
                 <div>
                   <label className="block mb-2 text-sm font-medium text-gray-700">
                     Email
@@ -151,12 +185,11 @@ const UserProfile = () => {
                     disabled={!isEditable}
                   />
                 </div>
-
                 {isEditable && (
                   <div className="col-span-2 mt-4">
                     <Button
                       className="w-full bg-[#4182F9] text-white px-4 py-2 rounded-md"
-                      onClick={handleSubmit}
+                      type="submit"
                     >
                       {status === "loading" ? "Submitting..." : "Submit"}
                     </Button>
