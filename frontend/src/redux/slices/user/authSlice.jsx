@@ -21,6 +21,13 @@ export const loginUser = createAsyncThunk(
       const response = await authService.login(authData);
       console.log("The data sent ot the the backend is", authData);
       console.log("The reposneeeeeeeeeeeeee is ", response);
+      const { accessToken } = response.data?.Result;
+
+      if (accessToken) {
+        localStorage.setItem("accessToken", accessToken);
+      } else {
+        console.error("Token not received from server");
+      }
       return response.data;
     } catch (error) {
       console.log("The auth error is", error);

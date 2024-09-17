@@ -19,7 +19,7 @@ export const updateUserProfile = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       const response = await UserProfileApi.updateUserProfile(userData);
-
+      console.log("The reposneeeeeeeeeeeeee is ", response);
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -44,7 +44,7 @@ const userProfileSlice = createSlice({
       })
       .addCase(getUserProfile.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload;
+        state.user = action.payload?.Result?.user_data;
       })
       .addCase(getUserProfile.rejected, (state, action) => {
         state.status = "failed";
@@ -59,7 +59,7 @@ const userProfileSlice = createSlice({
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload;
+        state.user = action.payload?.Result?.user;
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.status = "failed";

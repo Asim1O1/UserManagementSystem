@@ -6,7 +6,7 @@ const token = localStorage.getItem("accessToken");
 const UserProfileApi = {
   getUserProfile: async () => {
     try {
-      const response = await axios.get(`${BASE_URL}users/getUserProfile`, {
+      const response = await axios.get(`${BASE_URL}users/userProfile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -20,6 +20,7 @@ const UserProfileApi = {
 
   updateUserProfile: async (userData) => {
     try {
+        console.log("Entered the update user profile")
       const response = await axios.put(
         `${BASE_URL}users/updateUserProfile`,
         userData,
@@ -32,7 +33,7 @@ const UserProfileApi = {
       return response.data;
     } catch (error) {
       console.error("Error updating user profile:", error);
-      throw error; 
+      throw error;
     }
   },
 };
