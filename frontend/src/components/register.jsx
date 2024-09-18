@@ -5,6 +5,7 @@ import { registerUser } from "../redux/slices/user/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import PasswordToggle from "./PasswordToggle";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -235,6 +236,7 @@ const Register = () => {
                 >
                   Password
                 </label>
+                <PasswordToggle/>
               </div>
               {/* Agree to Terms */}
               <div className="flex items-center space-x-2">

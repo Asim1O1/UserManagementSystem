@@ -7,9 +7,19 @@ import {
 } from "../redux/slices/user/userProfile";
 import { ClipLoader } from "react-spinners";
 import { FaCamera } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]); // Add 'navigate' to the dependency array
+
   const { user, status, error } = useSelector((state) => state.UserProfile);
 
   const [isEditable, setIsEditable] = useState(false);

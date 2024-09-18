@@ -5,6 +5,7 @@ import { loginUser } from "../redux/slices/user/authSlice";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import PasswordToggle from "./PasswordToggle.jsx";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -137,6 +138,7 @@ const Login = () => {
                 >
                   Password
                 </label>
+                <PasswordToggle/>
               </div>
               {/* Agree to Terms */}
               <div className="flex  space-x-2">
