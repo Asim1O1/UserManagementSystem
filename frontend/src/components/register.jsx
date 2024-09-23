@@ -83,11 +83,14 @@ const Register = () => {
       ).unwrap();
       console.log("The result action is", resultAction);
 
-      if (registerUser.fulfilled.match(resultAction)) {
+      if (resultAction?.IsSuccess) {
         Swal.fire({
           title: "Success",
           icon: "success",
-          text: resultAction.payload.Result.message,
+          text:
+            resultAction?.payload?.Result?.message ||
+            resultAction?.Result?.message ||
+            "User Registered Successfully",
         });
 
         navigate("/login");
@@ -105,7 +108,9 @@ const Register = () => {
       Swal.fire({
         title: "Error",
         icon: "error",
-        text: "An unexpected server error occurred",
+        text:
+          error?.ErrorMessage[0]?.message ||
+          "An unexpected server error occurred",
       });
     }
   };

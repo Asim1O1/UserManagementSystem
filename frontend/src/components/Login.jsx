@@ -69,7 +69,10 @@ const Login = () => {
         Swal.fire({
           title: "Success",
           icon: "success",
-          text: resultAction.payload.Result.message,
+          text:
+            resultAction?.payload?.Result?.message ||
+            resultAction?.Result?.message ||
+            "User logged in successfully",
         });
 
         navigate("/");
@@ -86,7 +89,9 @@ const Login = () => {
       Swal.fire({
         title: "Error",
         icon: "error",
-        text: "Server Error. Please try again later",
+        text:
+          error?.ErrorMessage[0]?.message ||
+          "Server Error. Please try again later",
       });
       return error;
     }
