@@ -288,7 +288,7 @@ const Register = () => {
                 </Button>
               )}
               <p className="text-center text-sm">
-                Already have an account? a
+                Already have an account?
                 <a href="/login" className="text-red-500 cursor-pointer">
                   Login
                 </a>

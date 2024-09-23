@@ -1,6 +1,9 @@
 import React from "react";
 
 function NavBar() {
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+  };
   return (
     <>
       <nav className="  w-full max-w-3xl bg-gray-500 h-16 mx-auto rounded-3xl  place-content-center sticky z-50 top-0">
@@ -27,6 +30,16 @@ function NavBar() {
             {" "}
             <a href="/userProfile" className="hover:text-blue-500">
               Profile
+            </a>
+          </li>
+          <li>
+            {" "}
+            <a
+              href="/login"
+              className="hover:text-blue-500"
+              onClick={handleLogout}
+            >
+              Logout
             </a>
           </li>
         </ul>
