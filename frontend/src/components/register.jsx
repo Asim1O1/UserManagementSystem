@@ -22,6 +22,11 @@ const Register = () => {
 
   const { firstName, lastName, userName, email, password } = formData;
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -73,7 +78,9 @@ const Register = () => {
     }
 
     try {
-      const resultAction = await dispatch(registerUser(formDataToSend)).unwrap();
+      const resultAction = await dispatch(
+        registerUser(formDataToSend)
+      ).unwrap();
       console.log("The result action is", resultAction);
 
       if (registerUser.fulfilled.match(resultAction)) {
@@ -83,7 +90,7 @@ const Register = () => {
           text: resultAction.payload.Result.message,
         });
 
-        navigate("/login")
+        navigate("/login");
       } else {
         Swal.fire({
           title: "Error",
@@ -94,7 +101,7 @@ const Register = () => {
         });
       }
     } catch (error) {
-      console.log("The erorr is", error)
+      console.log("The erorr is", error);
       Swal.fire({
         title: "Error",
         icon: "error",
@@ -202,27 +209,27 @@ const Register = () => {
 
               {/* Email */}
               <div className="relative">
-                  <input
-                    type="text"
-                    id="email"
-                    name="email"
-                    value={email}
-                    onChange={handleChange}
-                    className="peer h-11 w-full border border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-indigo-600 p-4 rounded-sm"
-                    placeholder="email"
-                  />
-                  <label
-                    htmlFor="email"
-                    className="absolute left-4 -top-3.5 bg-white px-1 text-sm text-black transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-black peer-placeholder-shown:bg-transparent peer-focus:-top-2 peer-focus:text-gray-600 peer-focus:bg-white"
-                  >
-                    Email
-                  </label>
-                </div>
+                <input
+                  type="text"
+                  id="email"
+                  name="email"
+                  value={email}
+                  onChange={handleChange}
+                  className="peer h-11 w-full border border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-indigo-600 p-4 rounded-sm"
+                  placeholder="email"
+                />
+                <label
+                  htmlFor="email"
+                  className="absolute left-4 -top-3.5 bg-white px-1 text-sm text-black transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-black peer-placeholder-shown:bg-transparent peer-focus:-top-2 peer-focus:text-gray-600 peer-focus:bg-white"
+                >
+                  Email
+                </label>
+              </div>
 
               {/* Password */}
               <div className="relative">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   value={password}
@@ -236,8 +243,15 @@ const Register = () => {
                 >
                   Password
                 </label>
-                <PasswordToggle/>
+                {/* Password Toggle */}
+                <div className="absolute inset-y-6 mx-24">
+                  <PasswordToggle
+                    showPassword={showPassword}
+                    togglePasswordVisibility={togglePasswordVisibility}
+                  />
+                </div>
               </div>
+
               {/* Agree to Terms */}
               <div className="flex items-center space-x-2">
                 <input
@@ -257,7 +271,10 @@ const Register = () => {
                 Create account
               </Button>
               <p className="text-center text-sm">
-                Already have an account? Login
+                Already have an account?{" "}
+                <a href="/login" className="text-red-500 cursor-pointer">
+                  Login
+                </a>
               </p>
             </form>
           </div>

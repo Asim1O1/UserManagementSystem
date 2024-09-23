@@ -21,6 +21,12 @@ const Login = () => {
     setAuthData({ ...authData, [e.target.name]: e.target.value });
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
   const validateForm = (authData) => {
     if (!authData) {
       Swal.fire({
@@ -124,7 +130,7 @@ const Login = () => {
               {/* Password */}
               <div className="relative">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   value={password}
@@ -138,7 +144,12 @@ const Login = () => {
                 >
                   Password
                 </label>
-                <PasswordToggle/>
+                <div className="absolute inset-y-6 ">
+                  <PasswordToggle
+                    showPassword={showPassword}
+                    togglePasswordVisibility={togglePasswordVisibility}
+                  />
+                </div>
               </div>
               {/* Agree to Terms */}
               <div className="flex  space-x-2">
@@ -158,7 +169,12 @@ const Login = () => {
               <Button type="submit" onClick={handleSubmit} className="w-96">
                 Login
               </Button>
-              <p className=" text-sm px-6">Don't have an account? Register</p>
+              <p className=" text-sm px-6">
+                Don't have an account? {""}
+                <a href="/register" className="text-red-500 cursor-pointer">
+                  Register
+                </a>
+              </p>
             </form>
           </div>
           {/* Left Div for Image */}
