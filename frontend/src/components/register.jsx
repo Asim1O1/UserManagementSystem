@@ -6,11 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import PasswordToggle from "./PasswordToggle";
+import { ClipLoader } from "react-spinners";
 
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -76,6 +78,7 @@ const Register = () => {
     if (image) {
       formDataToSend.append("image", image);
     }
+    setLoading(true);
 
     try {
       const resultAction = await dispatch(
@@ -112,6 +115,8 @@ const Register = () => {
           error?.ErrorMessage[0]?.message ||
           "An unexpected server error occurred",
       });
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -272,11 +277,18 @@ const Register = () => {
                 </label>
               </div>
 
-              <Button type="submit" onClick={handleSubmit}>
-                Create account
-              </Button>
+              {/* Loader or Submit Button */}
+              {loading ? (
+                <div className="flex justify-center items-center">
+                  <ClipLoader color={"#0000ff"} loading={loading} size={50} />
+                </div>
+              ) : (
+                <Button type="submit" onClick={handleSubmit}>
+                  Create account
+                </Button>
+              )}
               <p className="text-center text-sm">
-                Already have an account?{" "}
+                Already have an account? a
                 <a href="/login" className="text-red-500 cursor-pointer">
                   Login
                 </a>
