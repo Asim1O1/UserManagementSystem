@@ -90,7 +90,7 @@ export const registerUser = async (req, res, next) => {
 
     // Prepare the response without the password
     const userObject = newUser.toObject();
-    console.log("The user ovject while createig user ", userObject)
+    console.log("The user ovject while createig user ", userObject);
     delete userObject.password;
 
     // Send success response
@@ -170,13 +170,13 @@ export const userLogin = async (req, res, next) => {
 export const getUserProfile = async (req, res, next) => {
   try {
     const user = await userModel.findById(req.user.userId).select("-password");
-    console.log("THE USER IS ", user)
+    console.log("THE USER IS ", user);
 
     if (!user) {
       return next(createError(404, "User not Found!"));
     }
     const userObject = user.toObject();
-    console.log("The user object ", userObject)
+    console.log("The user object ", userObject);
     return res.status(200).json({
       IsSuccess: true,
       ErrorMessage: [],
@@ -251,3 +251,9 @@ export const updateUserProfile = async (req, res, next) => {
     return next(createError(500, "Internal server error. Try again later!"));
   }
 };
+
+//Forgot Password Section
+
+const ForgotPassword = () {
+const body = req.body;
+}
