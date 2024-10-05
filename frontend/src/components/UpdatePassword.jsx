@@ -7,7 +7,6 @@ const UpdatePassword = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add form submission logic here
   };
 
   return (
@@ -18,7 +17,6 @@ const UpdatePassword = () => {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Old Password Input */}
           <div className="relative">
             <input
               type="password"
@@ -38,7 +36,6 @@ const UpdatePassword = () => {
             </label>
           </div>
 
-          {/* New Password Input */}
           <div className="relative">
             <input
               type="password"
@@ -58,7 +55,6 @@ const UpdatePassword = () => {
             </label>
           </div>
 
-          {/* Confirm New Password Input */}
           <div className="relative">
             <input
               type="password"
@@ -78,7 +74,6 @@ const UpdatePassword = () => {
             </label>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition duration-300"

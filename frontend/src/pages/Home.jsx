@@ -20,7 +20,9 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 max-w-6xl mx-auto mt-8">
           {/* Manage Users */}
           <div className="bg-white shadow-lg rounded-lg p-6 text-center hover:shadow-xl transition-shadow">
-            <h2 className="text-2xl font-semibold text-gray-800">Manage Users</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">
+              Manage Users
+            </h2>
             <p className="text-gray-600 mt-2">
               Add, edit, or delete users from your system.
             </p>
@@ -31,7 +33,9 @@ const Home = () => {
 
           {/* View Reports */}
           <div className="bg-white shadow-lg rounded-lg p-6 text-center hover:shadow-xl transition-shadow">
-            <h2 className="text-2xl font-semibold text-gray-800">View Reports</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">
+              View Reports
+            </h2>
             <p className="text-gray-600 mt-2">
               Check user activity and system reports.
             </p>
