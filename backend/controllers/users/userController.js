@@ -68,7 +68,7 @@ export const registerUser = async (req, res, next) => {
     let imageUrl = "";
     if (req.file) {
       const imagePath = getFilePath(req?.file?.filename);
-      console.log("hello");
+
       const imageMimeType = req.file.mimetype.split("/").pop();
       imageUrl = await uploadToCloudinary(
         imagePath,
@@ -112,10 +112,6 @@ export const registerUser = async (req, res, next) => {
 // User Login
 export const userLogin = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log("The request body is", req.body);
-  console.log("The email and password is", email, password);
-
-  // Check if email and password are provided
   if (!email || !password) {
     return next(createError(400, "All fields are required."));
   }
@@ -193,7 +189,6 @@ export const getUserProfile = async (req, res, next) => {
 
 export const updateUserProfile = async (req, res, next) => {
   try {
-    console.log("Entered the update user profile");
     const user_id = req.user.userId;
     let user = await userModel.findById(user_id);
 
@@ -203,7 +198,6 @@ export const updateUserProfile = async (req, res, next) => {
 
     const { firstName, lastName, userName, email } = req.body;
     let imageUrl = user.image;
-    console.log("The image url is", imageUrl);
 
     if (req.file) {
       if (imageUrl) {
@@ -254,6 +248,6 @@ export const updateUserProfile = async (req, res, next) => {
 
 //Forgot Password Section
 
-const ForgotPassword = () {
-const body = req.body;
-}
+// const ForgotPassword = () {
+// const body = req.body;
+// }
