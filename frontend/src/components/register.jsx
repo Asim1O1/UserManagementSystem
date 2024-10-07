@@ -116,7 +116,7 @@ const Register = () => {
           "An unexpected server error occurred",
       });
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
