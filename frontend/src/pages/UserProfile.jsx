@@ -15,6 +15,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
+    console.log("The token is", token)
     if (!token) {
       navigate("/login");
     }
