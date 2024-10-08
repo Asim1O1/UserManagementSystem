@@ -4,7 +4,7 @@ import uiImage from "../assets/images/Rectangle 20 (3).png";
 import { loginUser } from "../redux/slices/user/authSlice";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordToggle from "./PasswordToggle.jsx";
 
 const Login = () => {
@@ -166,8 +166,11 @@ const Login = () => {
                 <label htmlFor="terms" className="text-sm text-black">
                   Remember me
                 </label>
-                <label htmlFor="terms" className="text-sm text-red-500">
-                  Forgot password
+                <label
+                  htmlFor="terms"
+                  className="text-sm text-red-500 cursor-pointer"
+                >
+                  <Link to={"/forgotPassword"}> Forgot password</Link>
                 </label>
               </div>
 
