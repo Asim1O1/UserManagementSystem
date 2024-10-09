@@ -9,12 +9,12 @@ function NavBar() {
   };
 
   const getActiveClass = (path) => {
-    return currentPath === path ? "border-b-2 border-blue-500" : ""; // Add active class if path matches
+    return currentPath === path ? "border-b-2 border-green-500" : "";
   };
 
   return (
     <>
-      <nav className="w-full max-w-3xl bg-gray-500 h-16 mx-auto rounded-3xl place-content-center sticky z-50 top-0">
+      <nav className="w-full max-w-3xl bg-gray-500 h-16 mx-auto rounded-3xl place-content-center sticky z-50 top-3">
         <ul className="flex justify-around text-white cursor-pointer font-semibold font-mono">
           <li>
             <a
