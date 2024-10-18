@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import uiImage from "../assets/images/forgot password.avif";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -9,18 +10,18 @@ const ForgotPassword = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add form submit logic here
   };
-
-  const uiImage = "https://via.placeholder.com/400"; // Replace with your image source
 
   return (
     <div className="h-screen flex items-center justify-center w-full bg-gray-100">
       <div className="flex justify-between bg-white h-[600px] items-center w-[1000px] rounded-3xl shadow-2xl p-8">
-        {/* Right Div for Form */}
         <div className="w-7/12 h-full flex flex-col justify-center px-8">
-          <h2 className="text-3xl font-bold mb-4 text-gray-700">Forgot Password</h2>
-          <p className="text-gray-600 mb-6">Enter your email to reset your password.</p>
+          <h2 className="text-3xl font-bold mb-4 text-gray-700">
+            Forgot Password
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Enter your email to reset your password.
+          </p>
 
           <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
             {/* Email Input */}
@@ -53,7 +54,10 @@ const ForgotPassword = () => {
               <label htmlFor="remember" className="text-sm text-gray-700">
                 Remember me
               </label>
-              <a href="/forgot-password" className="text-sm text-indigo-600 hover:underline">
+              <a
+                href="/forgot-password"
+                className="text-sm text-indigo-600 hover:underline"
+              >
                 Forgot password?
               </a>
             </div>
