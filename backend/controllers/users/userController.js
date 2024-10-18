@@ -247,7 +247,91 @@ export const updateUserProfile = async (req, res, next) => {
 };
 
 //Forgot Password Section
+export const ForgotPassword = async (req, res, next) => {
+  const { email } = req.body;
 
-// const ForgotPassword = () {
-// const body = req.body;
-// }
+  if (!email) {
+    return next(createError(400, "Email is required!"));
+  }
+
+  try {
+    const user = await userModel.findOne({ email: email });
+
+    if (!user) {
+      return next(createError(404, "User not found with the email address"));
+    }
+
+    // Generating reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    // Hash the token before saving it in the database
+    const hashedToken = await bcrypt.hash(resetToken, 10);
+
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+    // Send reset email with the token
+    const resetLink = `${req.protocol}://${req.get(
+      "host"
+    )}/reset-password/${resetToken}`;
+    await sendResetPasswordEmail(user.email, resetLink);
+
+    return res.status(200).json({
+      IsSuccess: true,
+      ErrorMessage: [],
+      Result: {
+        message: "Password reset link has been sent to your email.",
+      },
+    });
+  } catch (error) {
+    console.error("The error while performing forgot password is", error);
+    return next(createError(500, "Internal Server Error"));
+  }
+};
+
+// Reset password using token
+export const resetPassword = async (req, res, next) => {
+  const { token } = req.params; // Get the reset token from URL
+  const { newPassword } = req.body;
+
+  if (!newPassword) {
+    return next(createError(400, "New password is required!"));
+  }
+
+  try {
+    const user = await userModel.findOne({
+      resetPasswordExpires: { $gt: Date.now() }, // Check token expiry
+    });
+
+    if (!user) {
+      return next(
+        createError(400, "Password reset token is invalid or has expired.")
+      );
+    }
+
+    // Compare the token
+    const isTokenValid = await bcrypt.compare(token, user.resetPasswordToken);
+    if (!isTokenValid) {
+      return next(createError(400, "Invalid password reset token."));
+    }
+
+    // Hash the new password and save it
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    return res.status(200).json({
+      IsSuccess: true,
+      ErrorMessage: [],
+      Result: {
+        message: "Password has been reset successfully.",
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return next(
+      createError(500, "Internal server error. Please try again later.")
+    );
+  }
+};
