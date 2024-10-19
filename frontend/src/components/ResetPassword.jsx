@@ -1,15 +1,25 @@
 import React, { useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import uiImage from "../assets/images/forgot password.avif";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import PasswordToggle from "./PasswordToggle.jsx";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const ResetPassword = () => {
-  // State for email, password, confirm password, and loading
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Handle input change
+  const { token } = useParams();
+  console.log(token);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "email") setEmail(value);
@@ -17,27 +27,47 @@ const ResetPassword = () => {
     if (name === "confirmPassword") setConfirmPassword(value);
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Entered the handle submit");
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Passwords do not match!",
+      });
       return;
     }
     setLoading(true);
 
     try {
-      const response = await axios.post("/api/password-reset", {
-        email,
-        password,
+      const response = await axios.post(
+        `http://localhost:3001/api/users/reset-password/${token}`,
+        {
+          newPassword: password,
+        }
+      );
+
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Password has been reset successfully.",
       });
-      alert("Password has been reset successfully.");
+
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      setLoading(false);
     } catch (error) {
-      alert("Error resetting password. Please try again.");
+      console.log("The error while resetting password is", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error.response?.data?.ErrorMessage ||
+          "An error occurred while resetting the password.",
+      });
+    } finally {
       setLoading(false);
     }
   };
@@ -75,7 +105,7 @@ const ResetPassword = () => {
 
             <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
                 value={password}
@@ -90,11 +120,15 @@ const ResetPassword = () => {
               >
                 New Password
               </label>
+              <PasswordToggle
+                showPassword={showPassword}
+                togglePasswordVisibility={togglePasswordVisibility}
+              />
             </div>
 
             <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="confirmPassword"
                 name="confirmPassword"
                 value={confirmPassword}
@@ -109,23 +143,6 @@ const ResetPassword = () => {
               >
                 Confirm Password
               </label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="remember"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember" className="text-sm text-gray-700">
-                Remember me
-              </label>
-              <a
-                href="/forgotPassword"
-                className="text-sm text-indigo-600 hover:underline"
-              >
-                Forgot password?
-              </a>
             </div>
 
             <button

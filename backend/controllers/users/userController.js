@@ -9,6 +9,7 @@ import {
 import cloudinary from "../../configuration/cloudinary.js";
 import crypto from "crypto";
 import sendResetPasswordEmail from "../../utils/emailService.js";
+import Config from "../../configuration/config.js";
 
 const usernameRegex = /^[a-zA-Z0-9._-]{3,20}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -257,25 +258,26 @@ export const ForgotPassword = async (req, res, next) => {
   }
 
   try {
-    const user = await userModel.findOne({ email: email });
+    const user = await userModel.findOne({ email });
 
     if (!user) {
       return next(createError(404, "User not found with the email address"));
     }
 
     // Generating reset token
-    const resetToken = crypto.randomBytes(32).toString("hex");
+    const token = crypto.randomBytes(32).toString("hex");
 
     // Hash the token before saving it in the database
-    const hashedToken = await bcrypt.hash(resetToken, 10);
+    const hashedToken = await bcrypt.hash(token, 10);
 
     user.resetPasswordToken = hashedToken;
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    console.log("The user is", user); // Log the user object to verify
+
     await user.save();
-    // Send reset email with the token
-    const resetLink = `${req.protocol}://${req.get(
-      "host"
-    )}/reset-password/${resetToken}`;
+
+    // Create the reset link using the plain token
+    const resetLink = `${Config.frontend_url}/reset-password/${token}`;
     await sendResetPasswordEmail(user.email, resetLink);
 
     return res.status(200).json({
@@ -293,8 +295,11 @@ export const ForgotPassword = async (req, res, next) => {
 
 // Reset password using token
 export const resetPassword = async (req, res, next) => {
-  const { token } = req.params; // Get the reset token from URL
+  const { token } = req.params;
   const { newPassword } = req.body;
+
+  console.log("The token is", token);
+  console.log("The new password is", newPassword);
 
   if (!newPassword) {
     return next(createError(400, "New password is required!"));
@@ -302,7 +307,7 @@ export const resetPassword = async (req, res, next) => {
 
   try {
     const user = await userModel.findOne({
-      resetPasswordExpires: { $gt: Date.now() }, // Check token expiry
+      resetPasswordExpires: { $gt: Date.now() }, // Check if the token hasn't expired
     });
 
     if (!user) {
@@ -311,16 +316,19 @@ export const resetPassword = async (req, res, next) => {
       );
     }
 
-    // Compare the token
-    const isTokenValid = await bcrypt.compare(token, user.resetPasswordToken);
-    if (!isTokenValid) {
-      return next(createError(400, "Invalid password reset token."));
+    // Compare the provided token with the hashed token in the database
+    const isMatch = await bcrypt.compare(token, user.resetPasswordToken);
+
+    if (!isMatch) {
+      return next(
+        createError(400, "Password reset token is invalid or has expired.")
+      );
     }
 
     // Hash the new password and save it
     user.password = await bcrypt.hash(newPassword, 10);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
+    user.resetPasswordToken = undefined; // Clear the token
+    user.resetPasswordExpires = undefined; // Clear the expiration
     await user.save();
 
     return res.status(200).json({
