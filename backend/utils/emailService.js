@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import createError from "http-errors";
-import Config from "../configuration/config";
+import Config from "../configuration/config.js";
 
 // Create a transporter object
 const transporter = nodemailer.createTransport({
@@ -12,8 +12,8 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send the reset password email
-export const sendResetPasswordEmail = async (email, resetToken) => {
-  const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+const sendResetPasswordEmail = async (email, resetToken) => {
+  const resetUrl = `${Config.frontend_url}/forgotPassword/${resetToken}`;
 
   const mailOptions = {
     from: Config.email_user,
@@ -37,3 +37,5 @@ export const sendResetPasswordEmail = async (email, resetToken) => {
     );
   }
 };
+
+export default sendResetPasswordEmail;

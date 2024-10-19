@@ -7,6 +7,8 @@ import {
   generateRefreshToken,
 } from "../../utils/tokenGenerations.js";
 import cloudinary from "../../configuration/cloudinary.js";
+import crypto from "crypto";
+import sendResetPasswordEmail from "../../utils/emailService.js";
 
 const usernameRegex = /^[a-zA-Z0-9._-]{3,20}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
