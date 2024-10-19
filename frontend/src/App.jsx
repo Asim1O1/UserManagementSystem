@@ -7,7 +7,7 @@ import Home from "./pages/Home";
 import ForgotPassword from "./components/ForgotPassword";
 import PageNotFound from "./pages/404 page";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import ResetPassword from "./components/ResetPassword";
 function App() {
   return (
     <>
@@ -17,6 +17,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgotPassword" element={<ForgotPassword />} />
+          <Route path="/resetPassword" element={<ResetPassword />} />
 
           <Route
             path="/userProfile"
