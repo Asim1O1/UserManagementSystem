@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { isTokenExpired } from "../components/ProtectedRoute"; // Ensure this import is available
 
 function NavBar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const token = localStorage.getItem("accessToken");
   const currentPath = window.location.pathname; // Get the current URL path
 
+  useEffect(() => {
+    // Check if token is available and valid
+    if (token && !isTokenExpired(token)) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+      localStorage.removeItem("accessToken"); // Remove expired token
+    }
+  }, [token]);
+
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
+    setIsLoggedIn(false); // Update login state after logout
   };
 
   const getActiveClass = (path) => {
@@ -25,7 +38,7 @@ function NavBar() {
             </a>
           </li>
 
-          {!token && (
+          {!isLoggedIn && (
             <>
               <li>
                 <a
@@ -48,7 +61,7 @@ function NavBar() {
             </>
           )}
 
-          {token && (
+          {isLoggedIn && (
             <>
               <li>
                 <a

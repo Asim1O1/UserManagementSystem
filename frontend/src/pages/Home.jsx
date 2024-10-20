@@ -1,20 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "../components/NavBar";
 import { useSelector } from "react-redux";
+import { isTokenExpired } from "../components/ProtectedRoute";
+import { jwtDecode } from "jwt-decode";
 
 const Home = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const token = localStorage.getItem("accessToken");
+
   const userName = useSelector(
     (state) => state?.auth?.user?.Result?.user?.userName
   );
-  console.log("The user name is ", userName);
+
+  useEffect(() => {
+    // Check if token is available and not expired
+    if (token && !isTokenExpired(token)) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+      localStorage.removeItem("accessToken"); // Remove expired token
+    }
+  }, [token]);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Navigation Bar */}
       <NavBar />
 
-      {token ? (
+      {isLoggedIn ? (
         // User Home Section
         <div className="flex-grow flex flex-col justify-center items-center">
           <div className="bg-white shadow-md py-12 px-6 rounded-lg text-center max-w-lg mx-auto">

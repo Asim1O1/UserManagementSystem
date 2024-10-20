@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { Navigate } from "react-router-dom";
 
 // Helper function to check if the token is expired
-const isTokenExpired = (token) => {
+export const isTokenExpired = (token) => {
   if (!token) return true;
   const decodedToken = jwtDecode(token);
   const currentTime = Date.now() / 1000;
